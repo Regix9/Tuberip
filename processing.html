@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TubeRip — Extracting...</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
+  <style>
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem;
+    }
+    .processing-card {
+      max-width: 720px;
+      width: 100%;
+      padding: 3rem;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(197,160,89,.12);
+    }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      border: 1px solid rgba(197,160,89,.25);
+      padding: .4rem 1rem;
+      margin-bottom: 2rem;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .card-title {
+      font-family: 'Bespoke Serif', serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 400;
+      margin-bottom: .5rem;
+    }
+    .card-subtitle {
+      color: #475569;
+      font-size: .8rem;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* Progress */
+    .progress-section { margin-bottom: 2rem; }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: .75rem;
+    }
+    .progress-header .phase {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .progress-header .pct {
+      font-family: 'Bespoke Serif', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .progress-track { margin-bottom: .5rem; }
+
+    .progress-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .prog-stat {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #334155;
+    }
+    .prog-stat span { color: #94A3B8; }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      padding: 1.75rem 0;
+      border-top: 1px solid rgba(255,255,255,.05);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      margin: 2rem 0;
+    }
+    @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat-item {}
+    .stat-item .stat-lbl {
+      font-size: .55rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: .4rem;
+    }
+    .stat-item .stat-val {
+      font-family: 'Bespoke Serif', serif;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .stat-item .stat-unit {
+      font-size: .6rem;
+      color: #475569;
+      margin-left: .25rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    /* Action buttons */
+    .actions { display: flex; gap: 1rem; }
+    .action-btn {
+      flex: 1;
+      height: 48px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: transparent;
+      color: #475569;
+      font-family: 'Satoshi', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      transition: all .3s;
+    }
+    .action-btn.danger { border-color: rgba(239,68,68,.2); color: #ef4444; }
+    .action-btn:hover { border-color: rgba(197,160,89,.3); color: #fff; }
+    .action-btn.danger:hover { background: rgba(239,68,68,.05); border-color: rgba(239,68,68,.4); }
+    .action-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* Log section */
+    .log-section { margin-top: 2rem; }
+    .log-header {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: .75rem;
+    }
+    .log-box {
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.04);
+      padding: 1rem;
+      height: 80px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: .7rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .log-box p { margin: 0; }
+    .log-box p.gold { color: var(--gold); }
+
+    /* Security row */
+    .security-row {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .sec-chip {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #334155;
+    }
+    .sec-chip iconify-icon { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <nav></nav>
+  <main>
+    <div class="processing-card">
+      <div class="status-badge">
+        <div class="pulse-dot"></div>
+        <span id="status-text">Extraction in Progress</span>
+      </div>
+
+      <h1 class="card-title font-serif">
+        Acquiring <em class="gold-text">Master File</em>
+      </h1>
+      <p class="card-subtitle" id="video-title">Initialising...</p>
+
+      <!-- Progress -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="phase" id="phase-label">Connecting to server</span>
+          <span class="pct" id="pct-label">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-meta">
+          <div class="prog-stat">Speed: <span id="speed-val">—</span></div>
+          <div class="prog-stat">ETA: <span id="eta-val">—</span></div>
+          <div class="prog-stat">Downloaded: <span id="dl-val">—</span></div>
+        </div>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-lbl">Format</div>
+          <div class="stat-val" id="stat-format">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Quality</div>
+          <div class="stat-val" id="stat-quality">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Est. Size</div>
+          <div class="stat-val" id="stat-size">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Job ID</div>
+          <div class="stat-val" id="stat-jobid" style="font-size:.75rem;font-family:monospace">—</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="action-btn" id="pause-btn" disabled>
+          <iconify-icon icon="lucide:pause"></iconify-icon>
+          Suspend
+        </button>
+        <button class="action-btn danger" id="cancel-btn">
+          <iconify-icon icon="lucide:x-circle"></iconify-icon>
+          Terminate
+        </button>
+      </div>
+
+      <!-- Log -->
+      <div class="log-section">
+        <p class="log-header">Extraction Log</p>
+        <div class="log-box" id="log-box">
+          <p class="gold">» Initialising TubeRip engine...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer></footer>
+  <div id="error-toast"></div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    injectNav('Downloader');
+    injectFooter();
+
+    const job     = Store.get('job');
+    const options = Store.get('options');
+
+    if (!job || !options) { window.location.href = 'index.html'; }
+
+    /* ── Populate static info ── */
+    document.getElementById('video-title').textContent = options.title || options.url;
+    document.getElementById('stat-format').textContent  = options.format === 'audio' ? 'MP3' : 'MP4';
+    document.getElementById('stat-quality').textContent = options.quality || '—';
+    document.getElementById('stat-jobid').textContent   = (job.jobId || '—').slice(0,12);
+
+    // Estimate size
+    function estSize(q, dur) {
+      const m = {'4K':40,'1080p':8,'720p':4,'480p':2,'360p':1,'320kbps':.32,'192kbps':.192,'128kbps':.128};
+      const bps = m[q] || 4;
+      if (!dur) return '—';
+      const mb = (bps * dur) / 8;
+      return mb > 1000 ? (mb/1000).toFixed(2)+' GB' : Math.round(mb)+' MB';
+    }
+    const info = Store.get('info');
+    document.getElementById('stat-size').textContent = estSize(options.quality, info && info.duration);
+
+    /* ── Log helper ── */
+    const logBox = document.getElementById('log-box');
+    function appendLog(msg, gold=false) {
+      const p = document.createElement('p');
+      if (gold) p.classList.add('gold');
+      p.textContent = '» ' + msg;
+      logBox.appendChild(p);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    /* ── Poll progress via SSE ── */
+    let pollInterval = null;
+    let cancelled = false;
+
+    function setProgress(pct, phase, speed, eta, dlSize) {
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('pct-label').textContent = Math.round(pct) + '%';
+      if (phase) document.getElementById('phase-label').textContent = phase;
+      if (speed) document.getElementById('speed-val').textContent = speed;
+      if (eta)   document.getElementById('eta-val').textContent = eta;
+      if (dlSize) document.getElementById('dl-val').textContent = dlSize;
+    }
+
+    async function pollStatus() {
+      if (cancelled) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/download/status/${job.jobId}`);
+        if (!res.ok) throw new Error('Status check failed');
+        const data = await res.json();
+
+        setProgress(
+          data.percent || 0,
+          data.phase || 'Processing',
+          data.speed,
+          data.eta,
+          data.downloaded
+        );
+
+        if (data.log) appendLog(data.log);
+
+        if (data.status === 'done') {
+          clearInterval(pollInterval);
+          document.getElementById('status-text').textContent = 'Extraction Complete';
+          document.getElementById('phase-label').textContent = 'Finalising package';
+          setProgress(100);
+          appendLog('Extraction complete — redirecting…', true);
+          Store.set('job', { ...job, ...data });
+          setTimeout(() => { window.location.href = 'done.html'; }, 1200);
+        } else if (data.status === 'error') {
+          clearInterval(pollInterval);
+          appendLog('ERROR: ' + (data.error || 'Unknown error'));
+          showError(data.error || 'Extraction failed.');
+          document.getElementById('status-text').textContent = 'Extraction Failed';
+        }
+      } catch (e) {
+        appendLog('Connection error: ' + e.message);
+      }
+    }
+
+    // Start polling
+    pollInterval = setInterval(pollStatus, 1500);
+    pollStatus(); // immediate first call
+
+    /* ── Cancel button ── */
+    document.getElementById('cancel-btn').addEventListener('click', async () => {
+      if (!confirm('Terminate this extraction?')) return;
+      cancelled = true;
+      clearInterval(pollInterval);
+      try {
+        await fetch(`${API_BASE}/api/download/cancel/${job.jobId}`, { method: 'DELETE' });
+      } catch {}
+      Store.clear();
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

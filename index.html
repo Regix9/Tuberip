@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TubeRip — Premium YouTube Downloader</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
+  <style>
+    /* ── Page-specific ── */
+    main { flex: 1; display: flex; flex-direction: column; }
+
+    /* Hero */
+    .hero {
+      padding: 10rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(197,160,89,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border: 1px solid rgba(197,160,89,.25);
+      padding: .4rem 1rem;
+      margin-bottom: 2rem;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .hero h1 {
+      font-family: 'Bespoke Serif', serif;
+      font-size: clamp(2.5rem, 7vw, 6rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      margin-bottom: 1.5rem;
+    }
+    .hero p {
+      max-width: 500px;
+      margin: 0 auto 3.5rem;
+      color: var(--silver);
+      font-size: .95rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    /* URL Box */
+    .url-box {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      height: 60px;
+      border: 1px solid rgba(197,160,89,.2);
+      background: rgba(255,255,255,.015);
+      backdrop-filter: blur(10px);
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .url-box:focus-within {
+      border-color: rgba(197,160,89,.5);
+      box-shadow: 0 0 30px rgba(197,160,89,.07);
+    }
+    .url-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: 'Satoshi', sans-serif;
+      font-size: .9rem;
+      padding: 0 1.25rem;
+      outline: none;
+    }
+    .url-box input::placeholder { color: #334155; }
+    .url-box button {
+      height: 100%;
+      padding: 0 2rem;
+      background: linear-gradient(135deg, #C5A059, #B38B45);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: .65rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .4s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .url-box button:hover { background: linear-gradient(135deg, #E2C284, #C5A059); }
+    .url-box button:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Supported formats row */
+    .formats-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .formats-row span {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .formats-row span iconify-icon { color: var(--gold); font-size: .9rem; }
+
+    /* Features section */
+    .features {
+      padding: 6rem 2rem;
+      background: rgba(0,0,0,.2);
+    }
+    .features-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      text-align: center;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Bespoke Serif', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      text-align: center;
+      font-weight: 400;
+      margin-bottom: 4rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 3rem;
+    }
+    .feature-card { position: relative; }
+    .feature-icon {
+      width: 56px; height: 56px;
+      border: 1px solid rgba(197,160,89,.2);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: background .5s;
+    }
+    .feature-card:hover .feature-icon { background: rgba(197,160,89,.08); }
+    .feature-card h3 {
+      font-family: 'Bespoke Serif', serif;
+      font-size: 1.3rem;
+      margin-bottom: .75rem;
+    }
+    .feature-card p { color: #475569; font-size: .85rem; line-height: 1.7; font-weight: 300; }
+
+    /* How it works */
+    .how { padding: 6rem 2rem; }
+    .how-inner { max-width: 900px; margin: 0 auto; }
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex;
+      gap: 2rem;
+      position: relative;
+      padding-bottom: 3rem;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .step-num {
+      width: 40px; height: 40px;
+      border: 1px solid rgba(197,160,89,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bespoke Serif', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .step-connector {
+      width: 1px;
+      flex: 1;
+      background: rgba(197,160,89,.1);
+      margin-top: .5rem;
+    }
+    .step-body { padding-top: .4rem; }
+    .step-body h4 {
+      font-family: 'Bespoke Serif', serif;
+      font-size: 1.15rem;
+      margin-bottom: .5rem;
+    }
+    .step-body p { color: #475569; font-size: .85rem; line-height: 1.7; font-weight: 300; }
+
+    /* Loading spinner in button */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <nav></nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <div class="hero-badge">
+        <div class="pulse-dot"></div>
+        Uncompromising Quality
+      </div>
+      <h1>Preserve Every<br/><em class="gold-text">Single Frame</em></h1>
+      <p>Paste any YouTube link and download in your preferred quality — MP4 video or MP3 audio, instantly.</p>
+
+      <!-- URL Input -->
+      <div class="url-box shimmer">
+        <input
+          type="url"
+          id="url-input"
+          placeholder="https://www.youtube.com/watch?v=..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="fetch-btn">
+          <span id="btn-label">Analyse</span>
+          <div id="btn-spinner" class="spinner" style="display:none"></div>
+        </button>
+      </div>
+
+      <div class="formats-row">
+        <span><iconify-icon icon="lucide:video"></iconify-icon> MP4 Video</span>
+        <span style="color:rgba(255,255,255,.1)">·</span>
+        <span><iconify-icon icon="lucide:music"></iconify-icon> MP3 Audio</span>
+        <span style="color:rgba(255,255,255,.1)">·</span>
+        <span><iconify-icon icon="lucide:layers"></iconify-icon> 4K / 1080p / 720p</span>
+        <span style="color:rgba(255,255,255,.1)">·</span>
+        <span><iconify-icon icon="lucide:zap"></iconify-icon> Fast &amp; Free</span>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="how">
+      <div class="features-inner">
+        <p class="section-label">Why TubeRip</p>
+        <h2 class="section-title font-serif">Built for the<br/><em class="gold-text">Discerning Few</em></h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <iconify-icon icon="lucide:shield-check" style="color:var(--gold);font-size:1.6rem"></iconify-icon>
+            </div>
+            <h3>Encrypted Transfers</h3>
+            <p>All downloads are streamed directly through our secured pipeline — no third-party storage, no data retention.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <iconify-icon icon="lucide:cpu" style="color:var(--gold);font-size:1.6rem"></iconify-icon>
+            </div>
+            <h3>yt-dlp Powered</h3>
+            <p>Backed by the industry's most reliable open-source extraction engine — always up to date, always accurate.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <iconify-icon icon="lucide:sliders" style="color:var(--gold);font-size:1.6rem"></iconify-icon>
+            </div>
+            <h3>Full Control</h3>
+            <p>Choose resolution, codec, audio quality, and trim exact segments. You decide exactly what you get.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Steps -->
+    <section class="how" id="about">
+      <div class="how-inner">
+        <p class="section-label">Process</p>
+        <h2 class="section-title font-serif" style="text-align:center;margin-bottom:3rem">Three Steps to<br/><em class="gold-text">Perfection</em></h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-line">
+              <div class="step-num">I</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <h4>Paste the URL</h4>
+              <p>Copy any YouTube video link and paste it into the input above. Shorts, playlists, and standard videos — all supported.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-line">
+              <div class="step-num">II</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <h4>Configure Your Download</h4>
+              <p>Select your preferred format (MP4 / MP3), resolution, and any advanced options. Preview the video before committing.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-line">
+              <div class="step-num">III</div>
+            </div>
+            <div class="step-body">
+              <h4>Download Instantly</h4>
+              <p>Our server extracts and streams the file directly to your device at maximum speed. No waiting rooms, no queues.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer></footer>
+  <div id="error-toast"></div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    injectNav('Downloader');
+    injectFooter();
+
+    const urlInput = document.getElementById('url-input');
+    const fetchBtn = document.getElementById('fetch-btn');
+    const btnLabel = document.getElementById('btn-label');
+    const btnSpinner = document.getElementById('btn-spinner');
+
+    // Allow pasting and pressing Enter
+    urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') fetchBtn.click(); });
+
+    fetchBtn.addEventListener('click', async () => {
+      const raw = urlInput.value.trim();
+      if (!raw) { showError('Please paste a YouTube URL first.'); return; }
+
+      const videoId = extractYouTubeId(raw);
+      if (!videoId) { showError('Invalid YouTube URL — please check and try again.'); return; }
+
+      // Show loading
+      fetchBtn.disabled = true;
+      btnLabel.style.display = 'none';
+      btnSpinner.style.display = 'block';
+
+      try {
+        // Call backend to get video info
+        const res = await fetch(`${API_BASE}/api/info?url=${encodeURIComponent(raw)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || 'Could not fetch video info.');
+        }
+        const data = await res.json();
+        Store.set('info', { ...data, originalUrl: raw, videoId });
+        window.location.href = 'preview.html';
+      } catch (err) {
+        showError(err.message || 'Server error. Is the backend running?');
+        fetchBtn.disabled = false;
+        btnLabel.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

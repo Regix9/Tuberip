@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TubeRip — Configure Download</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" defer></script>
+  <style>
+    main { flex: 1; padding: 7rem 2rem 4rem; }
+    .page-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      color: #475569;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-bottom: 2.5rem;
+      transition: color .3s;
+    }
+    .back-link:hover { color: var(--gold); }
+
+    /* Page header */
+    .page-header { margin-bottom: 3rem; }
+    .page-header .label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .75rem;
+    }
+    .page-header h1 {
+      font-family: 'Bespoke Serif', serif;
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 400;
+    }
+
+    /* Two-col layout */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+    /* Thumbnail */
+    .thumb-wrap {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      overflow: hidden;
+    }
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(2,6,23,.8) 0%, transparent 50%);
+    }
+    .thumb-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: rgba(2,6,23,.8);
+      border: 1px solid rgba(197,160,89,.3);
+      padding: .3rem .75rem;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .thumb-duration {
+      position: absolute;
+      bottom: 1rem; right: 1rem;
+      background: rgba(2,6,23,.85);
+      padding: .25rem .6rem;
+      font-size: .7rem;
+      font-family: monospace;
+      color: #fff;
+    }
+
+    /* Video meta */
+    .video-meta {
+      padding: 1.5rem 0 2rem;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      margin-bottom: 2rem;
+    }
+    .video-meta h2 {
+      font-family: 'Bespoke Serif', serif;
+      font-size: 1.35rem;
+      margin-bottom: .75rem;
+      line-height: 1.35;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .meta-chip {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .meta-chip iconify-icon { color: var(--gold); font-size: 1rem; }
+
+    /* Section label */
+    .section-lbl {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    /* Format tabs */
+    .format-tabs {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: 2rem;
+    }
+    .format-tab {
+      flex: 1;
+      height: 52px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: transparent;
+      color: #475569;
+      font-family: 'Satoshi', sans-serif;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      transition: all .3s;
+    }
+    .format-tab:hover { border-color: rgba(197,160,89,.3); color: #fff; }
+    .format-tab.active {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(197,160,89,.06);
+    }
+    .format-tab iconify-icon { font-size: 1.2rem; }
+
+    /* Quality section */
+    .quality-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Trim section */
+    .trim-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: .75rem;
+    }
+    .time-input-wrap {
+      flex: 1;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: .5rem;
+    }
+    .time-input-wrap label {
+      font-size: .55rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #334155;
+      white-space: nowrap;
+    }
+    .time-input-wrap input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: monospace;
+      font-size: .85rem;
+      width: 100%;
+      outline: none;
+    }
+    .trim-separator { color: #334155; font-size: .7rem; }
+
+    /* Advanced toggle row */
+    .adv-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.05);
+      margin-bottom: .6rem;
+    }
+    .adv-row-info { display: flex; align-items: center; gap: .75rem; }
+    .adv-row-info iconify-icon { color: var(--gold); font-size: 1.1rem; }
+    .adv-row-info span {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #94A3B8;
+    }
+
+    /* Sidebar card */
+    .sidebar-card {
+      padding: 2rem;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(197,160,89,.12);
+      position: sticky;
+      top: 6rem;
+    }
+    .sidebar-card h3 {
+      font-family: 'Bespoke Serif', serif;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .spec-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .spec-item:last-child { border-bottom: none; }
+    .spec-item .lbl {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .spec-item .val {
+      font-family: 'Bespoke Serif', serif;
+      font-size: .9rem;
+      color: #fff;
+    }
+    .spec-item .val.gold { color: var(--gold); }
+
+    .download-btn {
+      width: 100%;
+      height: 56px;
+      margin-bottom: 1rem;
+    }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <nav></nav>
+  <main>
+    <div class="page-inner">
+      <a href="index.html" class="back-link">
+        <iconify-icon icon="lucide:chevron-left"></iconify-icon>
+        New URL
+      </a>
+
+      <div class="page-header">
+        <p class="label">Step II — Configure</p>
+        <h1 class="font-serif">Cinematic <em class="gold-text">Preview & Options</em></h1>
+      </div>
+
+      <div class="layout">
+        <!-- Left col -->
+        <div>
+          <!-- Thumbnail -->
+          <div class="thumb-wrap">
+            <img id="thumb" src="" alt="Video thumbnail"/>
+            <div class="thumb-overlay"></div>
+            <div class="thumb-badge" id="quality-badge">4K</div>
+            <div class="thumb-duration" id="duration-badge">--:--</div>
+          </div>
+
+          <!-- Video meta -->
+          <div class="video-meta">
+            <h2 id="video-title">Loading...</h2>
+            <div class="meta-row">
+              <div class="meta-chip"><iconify-icon icon="lucide:user"></iconify-icon> <span id="channel-name">—</span></div>
+              <div class="meta-chip"><iconify-icon icon="lucide:eye"></iconify-icon> <span id="view-count">—</span></div>
+              <div class="meta-chip"><iconify-icon icon="lucide:calendar"></iconify-icon> <span id="upload-date">—</span></div>
+            </div>
+          </div>
+
+          <!-- Format -->
+          <p class="section-lbl">Format</p>
+          <div class="format-tabs">
+            <button class="format-tab active" data-format="video" id="tab-video">
+              <iconify-icon icon="lucide:video"></iconify-icon> MP4 Video
+            </button>
+            <button class="format-tab" data-format="audio" id="tab-audio">
+              <iconify-icon icon="lucide:music"></iconify-icon> MP3 Audio
+            </button>
+          </div>
+
+          <!-- Quality -->
+          <p class="section-lbl" id="quality-section-lbl">Video Quality</p>
+          <div class="quality-group" id="quality-group">
+            <!-- Filled by JS based on available formats -->
+          </div>
+
+          <!-- Trim -->
+          <p class="section-lbl">Trim (optional)</p>
+          <div class="trim-row">
+            <div class="time-input-wrap">
+              <label>From</label>
+              <input type="text" id="trim-start" placeholder="00:00:00"/>
+            </div>
+            <span class="trim-separator">→</span>
+            <div class="time-input-wrap">
+              <label>To</label>
+              <input type="text" id="trim-end" placeholder="end"/>
+            </div>
+          </div>
+          <p style="color:#334155;font-size:.65rem;letter-spacing:.1em;margin-bottom:2rem">Leave blank to download the full video.</p>
+
+          <!-- Advanced options -->
+          <p class="section-lbl">Advanced</p>
+          <div class="adv-row">
+            <div class="adv-row-info">
+              <iconify-icon icon="lucide:subtitles"></iconify-icon>
+              <span>Embed Subtitles</span>
+            </div>
+            <div class="toggle" id="toggle-subs"></div>
+          </div>
+          <div class="adv-row">
+            <div class="adv-row-info">
+              <iconify-icon icon="lucide:image"></iconify-icon>
+              <span>Embed Thumbnail</span>
+            </div>
+            <div class="toggle on" id="toggle-thumb"></div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div>
+          <div class="sidebar-card">
+            <h3>Download Summary</h3>
+            <ul class="spec-list">
+              <li class="spec-item">
+                <span class="lbl">Format</span>
+                <span class="val" id="sum-format">MP4 Video</span>
+              </li>
+              <li class="spec-item">
+                <span class="lbl">Quality</span>
+                <span class="val gold" id="sum-quality">—</span>
+              </li>
+              <li class="spec-item">
+                <span class="lbl">Est. Size</span>
+                <span class="val" id="sum-size">—</span>
+              </li>
+              <li class="spec-item">
+                <span class="lbl">Duration</span>
+                <span class="val" id="sum-duration">—</span>
+              </li>
+              <li class="spec-item">
+                <span class="lbl">Subtitles</span>
+                <span class="val" id="sum-subs">No</span>
+              </li>
+            </ul>
+
+            <button class="gold-btn download-btn shimmer" id="start-btn">
+              <iconify-icon icon="lucide:download"></iconify-icon>
+              <span id="start-label">Commence Extraction</span>
+              <div id="start-spinner" class="spinner" style="display:none"></div>
+            </button>
+            <a href="index.html" class="outline-btn" style="width:100%;height:44px">
+              <iconify-icon icon="lucide:rotate-ccw"></iconify-icon>
+              Change URL
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer></footer>
+  <div id="error-toast"></div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    injectNav('Downloader');
+    injectFooter();
+
+    /* ── State ── */
+    const info = Store.get('info');
+    if (!info) { window.location.href = 'index.html'; }
+
+    let selectedFormat = 'video';
+    let selectedQuality = null;
+    let subsEnabled = false;
+    let thumbEnabled = true;
+
+    /* ── Populate page ── */
+    function formatDuration(secs) {
+      if (!secs) return '--:--';
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+               : `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function formatViews(n) {
+      if (!n) return '—';
+      if (n >= 1e9) return (n/1e9).toFixed(1)+'B views';
+      if (n >= 1e6) return (n/1e6).toFixed(1)+'M views';
+      if (n >= 1e3) return (n/1e3).toFixed(1)+'K views';
+      return n+' views';
+    }
+
+    function estimateSize(quality, secs) {
+      if (!secs) return '—';
+      const bitrateMap = { '4K':40, '1440p':20, '1080p':8, '720p':4, '480p':2, '360p':1 };
+      const abMap = { '320kbps':.32, '192kbps':.192, '128kbps':.128 };
+      const bps = bitrateMap[quality] || abMap[quality] || 4;
+      const mb = (bps * secs) / 8;
+      return mb > 1000 ? (mb/1000).toFixed(2)+' GB' : Math.round(mb)+' MB';
+    }
+
+    function populateQualities(format) {
+      const group = document.getElementById('quality-group');
+      group.innerHTML = '';
+      document.getElementById('quality-section-lbl').textContent =
+        format === 'video' ? 'Video Quality' : 'Audio Quality';
+
+      const videoQualities = ['4K','1080p','720p','480p','360p'].filter(q => {
+        // Only show what the video actually has
+        if (!info.formats) return true;
+        const maxH = info.height || 9999;
+        const map = {'4K':2160,'1440p':1440,'1080p':1080,'720p':720,'480p':480,'360p':360};
+        return (map[q] || 0) <= maxH;
+      });
+
+      const audioQualities = ['320kbps','192kbps','128kbps'];
+      const qualities = format === 'video' ? videoQualities : audioQualities;
+
+      qualities.forEach((q, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'quality-pill' + (i === 0 ? ' active' : '');
+        btn.dataset.value = q;
+        btn.textContent = q;
+        group.appendChild(btn);
+      });
+
+      selectedQuality = qualities[0] || null;
+      updateSummary();
+
+      setupPillGroup(group, val => {
+        selectedQuality = val;
+        document.getElementById('quality-badge').textContent = val;
+        updateSummary();
+      });
+    }
+
+    function updateSummary() {
+      document.getElementById('sum-format').textContent =
+        selectedFormat === 'video' ? 'MP4 Video' : 'MP3 Audio';
+      document.getElementById('sum-quality').textContent = selectedQuality || '—';
+      document.getElementById('sum-size').textContent =
+        estimateSize(selectedQuality, info.duration);
+      document.getElementById('sum-duration').textContent =
+        formatDuration(info.duration);
+      document.getElementById('quality-badge').textContent = selectedQuality || '';
+    }
+
+    // Render info
+    if (info) {
+      document.getElementById('thumb').src =
+        info.thumbnail || `https://img.youtube.com/vi/${info.videoId}/maxresdefault.jpg`;
+      document.getElementById('video-title').textContent = info.title || 'Unknown Title';
+      document.getElementById('channel-name').textContent = info.uploader || '—';
+      document.getElementById('view-count').textContent = formatViews(info.view_count);
+      document.getElementById('upload-date').textContent =
+        info.upload_date
+          ? info.upload_date.replace(/(\d{4})(\d{2})(\d{2})/, '$3/$2/$1')
+          : '—';
+      document.getElementById('duration-badge').textContent = formatDuration(info.duration);
+      document.getElementById('sum-duration').textContent = formatDuration(info.duration);
+      document.title = `TubeRip — ${info.title || 'Configure Download'}`;
+    }
+
+    populateQualities('video');
+
+    /* ── Format tabs ── */
+    document.querySelectorAll('.format-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.format-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        selectedFormat = tab.dataset.format;
+        populateQualities(selectedFormat);
+        updateSummary();
+      });
+    });
+
+    /* ── Toggles ── */
+    setupToggle(document.getElementById('toggle-subs'), on => {
+      subsEnabled = on;
+      document.getElementById('sum-subs').textContent = on ? 'Yes' : 'No';
+    });
+    setupToggle(document.getElementById('toggle-thumb'), on => { thumbEnabled = on; });
+    // thumb toggle is 'on' by default
+    document.getElementById('toggle-thumb').classList.add('on');
+
+    /* ── Start download ── */
+    document.getElementById('start-btn').addEventListener('click', async () => {
+      if (!selectedQuality) { showError('Please select a quality.'); return; }
+
+      const btn = document.getElementById('start-btn');
+      btn.disabled = true;
+      document.getElementById('start-label').style.display = 'none';
+      document.getElementById('start-spinner').style.display = 'block';
+
+      const options = {
+        url: info.originalUrl,
+        format: selectedFormat,
+        quality: selectedQuality,
+        trimStart: document.getElementById('trim-start').value.trim(),
+        trimEnd:   document.getElementById('trim-end').value.trim(),
+        embedSubs:  subsEnabled,
+        embedThumb: thumbEnabled,
+        title: info.title,
+        videoId: info.videoId,
+        duration: info.duration,
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/download/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(options),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || 'Failed to start download.');
+        }
+        const job = await res.json();
+        Store.set('options', options);
+        Store.set('job', job);
+        window.location.href = 'processing.html';
+      } catch (err) {
+        showError(err.message);
+        btn.disabled = false;
+        document.getElementById('start-label').style.display = 'inline';
+        document.getElementById('start-spinner').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
