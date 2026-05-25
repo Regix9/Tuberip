@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeRip | Extraction Processing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=bespoke-serif@700,400&f[]=satoshi@500,400,300&display=swap');
+        :root { --navy-deep:#020617; --gold-primary:#C5A059; }
+        body { font-family:'Satoshi',sans-serif; background-color:var(--navy-deep); color:#f8fafc; }
+        .font-serif { font-family:'Bespoke Serif',serif; }
+        .glass-panel { background:rgba(255,255,255,0.02); backdrop-filter:blur(20px); border:1px solid rgba(197,160,89,0.15); }
+        .gold-gradient-text { background:linear-gradient(135deg,#C5A059 0%,#F1D39B 50%,#B38B45 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .gold-gradient-bg { background:linear-gradient(90deg,#C5A059 0%,#F1D39B 50%,#B38B45 100%); }
+        .shimmer { position:relative; overflow:hidden; }
+        .shimmer::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent); animation:shimmer-anim 3s infinite; }
+        @keyframes shimmer-anim { 0%{left:-100%} 100%{left:100%} }
+        .pulse-gold { animation:pulse-gold 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+        @keyframes pulse-gold { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .progress-bar-fill { width:0%; transition:width 0.8s ease-in-out; }
+        #error-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(120%); background:#1a0000; border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:0.75rem 1.5rem; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); z-index:9999; white-space:nowrap; }
+        #error-toast.show { transform:translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+<div class="min-h-screen flex flex-col selection:bg-[#C5A059]/30 selection:text-white relative">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-[1440px] mx-auto px-6 sm:px-12 h-20 sm:h-24 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 no-underline">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 border border-[#C5A059] flex items-center justify-center rotate-45">
+                    <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-base sm:text-xl -rotate-45"></iconify-icon>
+                </div>
+                <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.1em] uppercase text-white">Tube<span class="text-[#C5A059]">Rip</span></span>
+            </a>
+            <div class="hidden lg:flex items-center gap-8">
+                <a href="index.html" class="text-[#C5A059] text-xs font-bold tracking-widest uppercase">Exclusive Features</a>
+                <a href="#" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Concierge Support</a>
+                <a href="#" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Our Legacy</a>
+            </div>
+            <a href="#" class="px-4 sm:px-8 py-2 sm:py-3 border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-500">Join the Atelier</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col justify-center items-center py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-12">
+        <div class="max-w-4xl w-full space-y-8 sm:space-y-10 lg:space-y-12">
+
+            <!-- Status Header -->
+            <div class="text-center space-y-3 sm:space-y-4">
+                <div class="inline-flex items-center gap-2 px-4 py-2 border border-[#C5A059]/30 bg-[#C5A059]/5 rounded-none">
+                    <div class="w-1.5 h-1.5 bg-[#C5A059] rounded-full pulse-gold"></div>
+                    <span id="status-badge" class="text-[8px] sm:text-[10px] font-bold tracking-[0.3em] uppercase text-[#C5A059]">Extraction in Progress</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl lg:text-5xl font-serif font-light tracking-tight">
+                    Acquiring <span class="italic gold-gradient-text">Cinematic Master</span>
+                </h1>
+                <p class="text-slate-400 text-xs sm:text-sm tracking-widest uppercase px-4 truncate max-w-lg mx-auto" id="video-title-display">Initialising...</p>
+            </div>
+
+            <!-- Processing Panel -->
+            <div class="glass-panel rounded-sm overflow-hidden">
+                <div class="p-6 sm:p-10 lg:p-12 space-y-8 sm:space-y-10 lg:space-y-12">
+
+                    <!-- Progress Bar -->
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-end">
+                            <div class="space-y-1">
+                                <span class="block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Current Operation</span>
+                                <p class="text-xs sm:text-sm font-bold tracking-widest text-white uppercase" id="phase-text">Connecting to servers...</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-2xl sm:text-3xl font-serif text-[#C5A059]" id="pct-text">0%</span>
+                            </div>
+                        </div>
+                        <div class="h-2 sm:h-3 w-full bg-white/5 border border-white/10 rounded-none p-[2px]">
+                            <div class="h-full gold-gradient-bg progress-bar-fill shimmer" id="progress-fill"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-[8px] sm:text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                            <span id="dl-text">Transferred: —</span>
+                            <span id="eta-text">Remaining: —</span>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 py-6 sm:py-8 border-y border-white/5">
+                        <div class="space-y-2">
+                            <span class="block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Speed</span>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xl font-serif text-white" id="speed-val">—</span>
+                                <span class="text-[10px] text-slate-400 uppercase tracking-widest" id="speed-unit"></span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Format</span>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xl font-serif text-white" id="fmt-val">—</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Quality Tier</span>
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="lucide:layers" class="text-[#C5A059]"></iconify-icon>
+                                <span class="text-[10px] text-white font-bold uppercase tracking-widest" id="qual-val">—</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Processor</span>
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="lucide:cpu" class="text-[#C5A059]"></iconify-icon>
+                                <span class="text-[10px] text-white font-bold uppercase tracking-widest">yt-dlp Engine</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                        <button id="suspend-btn" disabled class="flex-1 h-12 sm:h-16 border border-[#C5A059] text-[#C5A059] text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed">
+                            <iconify-icon icon="lucide:pause" class="text-lg"></iconify-icon>
+                            Suspend Extraction
+                        </button>
+                        <button id="terminate-btn" class="flex-1 h-12 sm:h-16 border border-red-900/40 text-red-500 text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase hover:bg-red-900/20 transition-all duration-500 flex items-center justify-center gap-3">
+                            <iconify-icon icon="lucide:x-circle" class="text-lg"></iconify-icon>
+                            Terminate Process
+                        </button>
+                    </div>
+
+                    <!-- Log line -->
+                    <div class="text-center sm:text-left">
+                        <p class="text-[8px] sm:text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase font-mono" id="log-line">» Waiting for server response...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security note -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 py-6">
+                <div class="flex items-center gap-3">
+                    <iconify-icon icon="lucide:shield-check" class="text-[#C5A059] text-xl"></iconify-icon>
+                    <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.3em] text-slate-500 uppercase">Encrypted Protocol</span>
+                </div>
+                <div class="hidden sm:block w-px h-4 bg-white/10"></div>
+                <div class="flex items-center gap-3">
+                    <iconify-icon icon="lucide:lock" class="text-[#C5A059] text-xl"></iconify-icon>
+                    <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.3em] text-slate-500 uppercase">Private Atelier Reserve</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 sm:px-12">
+            <div class="mt-0 pt-0 flex flex-col md:flex-row justify-between items-center gap-8">
+                <p class="text-[10px] tracking-[0.2em] text-slate-600 uppercase">© 2024 TubeRip International S.A. All Rights Reserved.</p>
+                <div class="flex items-center gap-12">
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">Geneva</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">New York</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">London</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<div id="error-toast"></div>
+
+<script>
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001' : 'https://YOUR-BACKEND-URL.com';
+
+function showError(msg) {
+    const t = document.getElementById('error-toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+const job  = JSON.parse(sessionStorage.getItem('tr_job')  || 'null');
+const opts = JSON.parse(sessionStorage.getItem('tr_options') || 'null');
+const info = JSON.parse(sessionStorage.getItem('tr_info') || 'null');
+if (!job || !opts) { window.location.href = 'index.html'; }
+
+document.getElementById('video-title-display').textContent = info ? info.title : job.jobId;
+document.getElementById('fmt-val').textContent  = opts.format === 'audio' ? 'MP3' : 'MP4';
+document.getElementById('qual-val').textContent = opts.quality || '—';
+
+let pollTimer = null;
+let cancelled = false;
+
+function setProgress(pct) {
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('pct-text').textContent = Math.round(pct) + '%';
+}
+
+async function poll() {
+    if (cancelled) return;
+    try {
+        const res = await fetch(`${API_BASE}/api/download/status/${job.jobId}`);
+        if (!res.ok) throw new Error('Status check failed');
+        const data = await res.json();
+
+        if (data.percent) setProgress(data.percent);
+        if (data.phase)   document.getElementById('phase-text').textContent = data.phase;
+        if (data.speed)   { document.getElementById('speed-val').textContent = data.speed.replace('/s',''); document.getElementById('speed-unit').textContent = '/s'; }
+        if (data.eta)     document.getElementById('eta-text').textContent = 'Remaining: ' + data.eta;
+        if (data.downloaded) document.getElementById('dl-text').textContent = 'Transferred: ' + data.downloaded;
+        if (data.log)     document.getElementById('log-line').textContent = '» ' + data.log;
+
+        if (data.status === 'done') {
+            clearInterval(pollTimer);
+            setProgress(100);
+            document.getElementById('status-badge').textContent = 'Extraction Complete';
+            document.getElementById('phase-text').textContent = 'Finalising master file...';
+            document.getElementById('log-line').textContent = '» Extraction complete — redirecting...';
+            sessionStorage.setItem('tr_job', JSON.stringify({ ...job, ...data }));
+            setTimeout(() => { window.location.href = 'done.html'; }, 1200);
+        } else if (data.status === 'error') {
+            clearInterval(pollTimer);
+            document.getElementById('status-badge').textContent = 'Extraction Failed';
+            document.getElementById('phase-text').textContent = 'Error — ' + (data.error || 'Unknown');
+            showError(data.error || 'Extraction failed. Please try again.');
+        }
+    } catch (e) {
+        document.getElementById('log-line').textContent = '» Connection error: ' + e.message;
+    }
+}
+
+pollTimer = setInterval(poll, 1500);
+poll();
+
+document.getElementById('terminate-btn').addEventListener('click', async () => {
+    if (!confirm('Terminate this extraction?')) return;
+    cancelled = true;
+    clearInterval(pollTimer);
+    try { await fetch(`${API_BASE}/api/download/cancel/${job.jobId}`, { method: 'DELETE' }); } catch {}
+    sessionStorage.removeItem('tr_job');
+    window.location.href = 'index.html';
+});
+</script>
+</body>
+</html>

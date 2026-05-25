@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeRip | The Premium Content Extraction Standard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=bespoke-serif@700,400&f[]=satoshi@500,400,300&display=swap');
+        :root {
+            --navy-deep: #020617;
+            --gold-primary: #C5A059;
+            --gold-light: #E2C284;
+            --silver-text: #94A3B8;
+        }
+        body { font-family: 'Satoshi', sans-serif; background-color: var(--navy-deep); color: #f8fafc; }
+        .font-serif { font-family: 'Bespoke Serif', serif; }
+        .glass-panel { background: rgba(255,255,255,0.02); backdrop-filter: blur(20px); border: 1px solid rgba(197,160,89,0.15); }
+        .gold-gradient-text { background: linear-gradient(135deg,#C5A059 0%,#F1D39B 50%,#B38B45 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .gold-btn { background: linear-gradient(135deg,#C5A059 0%,#B38B45 100%); transition: all 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .gold-btn:hover { background: linear-gradient(135deg,#E2C284 0%,#C5A059 100%); transform: translateY(-2px); box-shadow: 0 15px 30px -10px rgba(197,160,89,0.3); }
+        .input-glow:focus { box-shadow: 0 0 20px rgba(197,160,89,0.1); border-color: rgba(197,160,89,0.5) !important; }
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent); animation:shimmer-anim 4s infinite; }
+        @keyframes shimmer-anim { 0%{left:-100%} 50%{left:100%} 100%{left:100%} }
+
+        /* Format button active state */
+        .format-btn.active { border-color: #C5A059 !important; color: #C5A059 !important; background: rgba(197,160,89,0.05) !important; }
+        .format-btn { transition: all 0.3s; }
+
+        /* Loading spinner */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { display:inline-block; width:18px; height:18px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
+
+        /* Error toast */
+        #error-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(120%); background:#1a0000; border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:0.75rem 1.5rem; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); z-index:9999; white-space:nowrap; }
+        #error-toast.show { transform:translateX(-50%) translateY(0); }
+
+        /* Mobile nav toggle */
+        #mobile-menu { display:none; }
+        #mobile-menu.open { display:flex; }
+    </style>
+</head>
+<body>
+<div class="min-h-screen flex flex-col selection:bg-[#C5A059]/30 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-[1440px] mx-auto px-6 sm:px-12 h-20 sm:h-24 flex items-center justify-between">
+            <div class="flex items-center gap-6 sm:gap-12">
+                <a href="index.html" class="flex items-center gap-3 no-underline">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 border border-[#C5A059] flex items-center justify-center rotate-45">
+                        <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-base sm:text-xl -rotate-45"></iconify-icon>
+                    </div>
+                    <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.1em] uppercase text-white">Tube<span class="text-[#C5A059]">Rip</span></span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#exclusive" class="text-[#C5A059] text-xs font-bold tracking-widest uppercase">Exclusive Features</a>
+                    <a href="#concierge" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Concierge Support</a>
+                    <a href="#about" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Our Legacy</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 sm:gap-8">
+                <button class="hidden sm:block text-xs font-bold tracking-widest text-slate-400 uppercase border-b border-transparent hover:border-[#C5A059] transition-all pb-1">Sign In</button>
+                <a href="#exclusive" class="px-4 sm:px-8 py-2 sm:py-3 border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-500">Join the Atelier</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <main class="flex-grow">
+        <section class="pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-24 lg:pb-32 px-6 sm:px-10 lg:px-12">
+            <div class="max-w-6xl mx-auto text-center space-y-12">
+                <div class="space-y-6">
+                    <span class="block text-xs font-bold tracking-[0.4em] text-[#C5A059] uppercase animate-pulse">Uncompromising Quality</span>
+                    <h1 class="text-3xl sm:text-6xl lg:text-8xl font-serif font-light tracking-tight leading-[1.1]">
+                        Preserve Every <br/>
+                        <span class="italic gold-gradient-text">Single Frame</span>
+                    </h1>
+                    <p class="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base lg:text-lg leading-relaxed font-light px-2">
+                        Experience the world's most sophisticated content extraction suite. Designed for those who demand pixel-perfect clarity and flawless audio fidelity.
+                    </p>
+                </div>
+
+                <!-- Master Tool Panel -->
+                <div class="max-w-4xl mx-auto mt-20">
+                    <div class="glass-panel p-1 rounded-sm shadow-2xl relative">
+                        <div class="absolute -top-12 left-1/2 -translate-x-1/2 flex items-center gap-4">
+                            <div class="h-px w-24 bg-gradient-to-r from-transparent to-[#C5A059]/40"></div>
+                            <iconify-icon icon="lucide:sparkles" class="text-[#C5A059]/40 text-sm"></iconify-icon>
+                            <div class="h-px w-24 bg-gradient-to-l from-transparent to-[#C5A059]/40"></div>
+                        </div>
+
+                        <div class="p-6 sm:p-10 lg:p-16 space-y-8 sm:space-y-12">
+
+                            <!-- URL Input -->
+                            <div class="relative group">
+                                <label class="absolute -top-3 left-6 px-2 bg-[#020617] text-[10px] font-bold tracking-[0.3em] text-[#C5A059] uppercase z-10">Digital Source URL</label>
+                                <input
+                                    id="url-input"
+                                    type="text"
+                                    placeholder="Enter the cinematic link..."
+                                    class="w-full h-14 lg:h-20 bg-transparent border border-white/10 rounded-none px-6 lg:px-8 focus:outline-none input-glow text-base lg:text-xl font-serif tracking-wide transition-all placeholder:text-slate-700"
+                                    autocomplete="off" spellcheck="false"
+                                />
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2">
+                                    <iconify-icon icon="lucide:link-2" class="text-[#C5A059] text-2xl"></iconify-icon>
+                                </div>
+                            </div>
+
+                            <!-- Controls Grid -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+                                <!-- Left: Format + Quality -->
+                                <div class="space-y-8">
+                                    <div class="space-y-4">
+                                        <p class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase">Output Standard</p>
+                                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                                            <button id="btn-video" class="format-btn active flex-1 h-14 border border-[#C5A059] text-[#C5A059] text-xs font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 bg-[#C5A059]/5">
+                                                <iconify-icon icon="lucide:video" class="text-lg"></iconify-icon>
+                                                4K Master
+                                            </button>
+                                            <button id="btn-audio" class="format-btn flex-1 h-14 border border-white/10 text-slate-400 text-xs font-bold tracking-[0.2em] uppercase flex items-center justify-center gap-2 hover:border-[#C5A059]/30">
+                                                <iconify-icon icon="lucide:music-4" class="text-lg"></iconify-icon>
+                                                Audiophile
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <p class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase">Bitrate Quality</p>
+                                        <div class="relative">
+                                            <select id="quality-select" class="w-full h-14 bg-white/5 border border-white/10 px-6 appearance-none text-sm tracking-wide text-slate-300 focus:outline-none focus:border-[#C5A059]/40 cursor-pointer">
+                                                <option value="4K">Ultra High Fidelity — 4K (2160p)</option>
+                                                <option value="1080p">High Definition — 1080p</option>
+                                                <option value="720p">Standard HD — 720p</option>
+                                                <option value="480p">Standard — 480p</option>
+                                                <option value="360p">Mobile — 360p</option>
+                                            </select>
+                                            <iconify-icon icon="lucide:chevron-down" class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></iconify-icon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right: Trim + Audio toggle -->
+                                <div class="space-y-8">
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between">
+                                            <p class="text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase">Temporal Trimming</p>
+                                            <span class="text-[10px] text-[#C5A059] font-bold tracking-widest uppercase">Precision Active</span>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex-1 h-14 border border-white/10 flex items-center px-6 gap-3">
+                                                <span class="text-[9px] font-bold text-slate-600 uppercase">From</span>
+                                                <input id="trim-start" type="text" placeholder="00:00:00" class="bg-transparent w-full text-xs font-mono tracking-widest focus:outline-none text-white placeholder:text-slate-700">
+                                            </div>
+                                            <div class="w-4 h-px bg-white/10"></div>
+                                            <div class="flex-1 h-14 border border-white/10 flex items-center px-6 gap-3">
+                                                <span class="text-[9px] font-bold text-slate-600 uppercase">To</span>
+                                                <input id="trim-end" type="text" placeholder="end" class="bg-transparent w-full text-xs font-mono tracking-widest focus:outline-none text-white placeholder:text-slate-700">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between p-6 bg-white/5 border border-white/5 rounded-none">
+                                        <div class="flex items-center gap-4">
+                                            <iconify-icon icon="lucide:file-audio" class="text-[#C5A059] text-xl"></iconify-icon>
+                                            <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">Audio Isolation Only</span>
+                                        </div>
+                                        <button id="audio-toggle" class="w-12 h-6 border border-[#C5A059]/30 rounded-full flex items-center px-1 transition-all duration-300">
+                                            <div id="audio-toggle-thumb" class="w-4 h-4 bg-slate-600 rounded-full transition-all duration-300"></div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CTA Button -->
+                            <button id="extract-btn" class="w-full h-16 lg:h-20 gold-btn text-white text-[10px] sm:text-sm font-bold tracking-[0.3em] sm:tracking-[0.4em] uppercase shadow-2xl shimmer flex items-center justify-center gap-3">
+                                <span id="extract-label">Commence Extraction</span>
+                                <div id="extract-spinner" class="spinner" style="display:none"></div>
+                            </button>
+
+                            <p class="text-center text-[10px] tracking-[0.2em] text-slate-600 uppercase">
+                                Subject to the terms of the private elite license. — © MMXXIV
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section id="exclusive" class="py-16 sm:py-24 lg:py-32 bg-black/20">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12 lg:gap-16">
+                    <div class="space-y-6 group">
+                        <div class="w-16 h-16 border border-[#C5A059]/20 flex items-center justify-center group-hover:bg-[#C5A059]/10 transition-all duration-700">
+                            <iconify-icon icon="lucide:shield-check" class="text-[#C5A059] text-3xl"></iconify-icon>
+                        </div>
+                        <h3 class="text-2xl font-serif font-bold tracking-tight">Encrypted Transfers</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed font-light">Military-grade protection for your private digital archive, ensuring your content remains exclusively yours.</p>
+                    </div>
+                    <div class="space-y-6 group">
+                        <div class="w-16 h-16 border border-[#C5A059]/20 flex items-center justify-center group-hover:bg-[#C5A059]/10 transition-all duration-700">
+                            <iconify-icon icon="lucide:cpu" class="text-[#C5A059] text-3xl"></iconify-icon>
+                        </div>
+                        <h3 class="text-2xl font-serif font-bold tracking-tight">Silicon Rendering</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed font-light">Leverage our proprietary cloud architecture to render high-bitrate masters in a fraction of standard time.</p>
+                    </div>
+                    <div class="space-y-6 group">
+                        <div class="w-16 h-16 border border-[#C5A059]/20 flex items-center justify-center group-hover:bg-[#C5A059]/10 transition-all duration-700">
+                            <iconify-icon icon="lucide:infinity" class="text-[#C5A059] text-3xl"></iconify-icon>
+                        </div>
+                        <h3 class="text-2xl font-serif font-bold tracking-tight">Unlimited Reserve</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed font-light">No restrictions on volume or scale. Your extraction capacity is limited only by your imagination.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 sm:px-12">
+            <div class="flex flex-col lg:flex-row justify-between gap-16 lg:gap-24">
+                <div class="max-w-sm space-y-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 border border-[#C5A059] flex items-center justify-center rotate-45">
+                            <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-lg -rotate-45"></iconify-icon>
+                        </div>
+                        <span class="font-serif text-xl font-bold tracking-[0.1em] uppercase">Tube<span class="text-[#C5A059]">Rip</span></span>
+                    </div>
+                    <p class="text-slate-500 text-xs leading-[2] tracking-widest uppercase">The definitive standard in digital content curation. Crafted for the discerning few who refuse to compromise on quality.</p>
+                    <div class="flex gap-6">
+                        <a href="#" class="text-[#C5A059] hover:text-white transition-all"><iconify-icon icon="lucide:instagram" class="text-xl"></iconify-icon></a>
+                        <a href="#" class="text-[#C5A059] hover:text-white transition-all"><iconify-icon icon="lucide:twitter" class="text-xl"></iconify-icon></a>
+                        <a href="#" class="text-[#C5A059] hover:text-white transition-all"><iconify-icon icon="lucide:linkedin" class="text-xl"></iconify-icon></a>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-16 sm:gap-24">
+                    <div class="space-y-6">
+                        <h4 class="text-[10px] font-bold tracking-[0.3em] text-[#C5A059] uppercase">The Suite</h4>
+                        <ul class="space-y-4 text-xs tracking-widest text-slate-500 uppercase">
+                            <li><a href="index.html" class="hover:text-white transition-colors">Master Downloader</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Batch Processing</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">API Integration</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Cloud Archive</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6">
+                        <h4 class="text-[10px] font-bold tracking-[0.3em] text-[#C5A059] uppercase">Company</h4>
+                        <ul class="space-y-4 text-xs tracking-widest text-slate-500 uppercase">
+                            <li><a href="#" class="hover:text-white transition-colors">Privacy Concierge</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Legal Charter</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Press Relations</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-24 sm:mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+                <p class="text-[10px] tracking-[0.2em] text-slate-600 uppercase">© 2024 TubeRip International S.A. All Rights Reserved.</p>
+                <div class="flex items-center gap-12">
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">Geneva</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">New York</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">London</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div id="error-toast"></div>
+
+<script>
+// ── Config ──
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001'
+    : 'https://YOUR-BACKEND-URL.com'; // <-- apna deployed backend URL yahan daalein
+
+// ── Helpers ──
+function extractVideoId(url) {
+    const p = [
+        /youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})/,
+        /youtu\.be\/([A-Za-z0-9_-]{11})/,
+        /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/,
+        /youtube\.com\/embed\/([A-Za-z0-9_-]{11})/
+    ];
+    for (const r of p) { const m = url.match(r); if (m) return m[1]; }
+    return null;
+}
+
+function showError(msg) {
+    const t = document.getElementById('error-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function setLoading(on) {
+    document.getElementById('extract-btn').disabled = on;
+    document.getElementById('extract-label').style.display = on ? 'none' : 'inline';
+    document.getElementById('extract-spinner').style.display = on ? 'inline-block' : 'none';
+}
+
+// ── Format toggle ──
+let selectedFormat = 'video';
+let audioIsolation = false;
+
+document.getElementById('btn-video').addEventListener('click', () => {
+    selectedFormat = 'video';
+    document.getElementById('btn-video').classList.add('active');
+    document.getElementById('btn-audio').classList.remove('active');
+    // Restore video quality options
+    const sel = document.getElementById('quality-select');
+    sel.innerHTML = `
+        <option value="4K">Ultra High Fidelity — 4K (2160p)</option>
+        <option value="1080p">High Definition — 1080p</option>
+        <option value="720p">Standard HD — 720p</option>
+        <option value="480p">Standard — 480p</option>
+        <option value="360p">Mobile — 360p</option>`;
+});
+
+document.getElementById('btn-audio').addEventListener('click', () => {
+    selectedFormat = 'audio';
+    document.getElementById('btn-audio').classList.add('active');
+    document.getElementById('btn-video').classList.remove('active');
+    // Switch to audio quality options
+    const sel = document.getElementById('quality-select');
+    sel.innerHTML = `
+        <option value="320kbps">Audiophile — 320 kbps</option>
+        <option value="192kbps">High Fidelity — 192 kbps</option>
+        <option value="128kbps">Standard — 128 kbps</option>`;
+});
+
+// ── Audio isolation toggle ──
+document.getElementById('audio-toggle').addEventListener('click', () => {
+    audioIsolation = !audioIsolation;
+    const thumb = document.getElementById('audio-toggle-thumb');
+    const btn = document.getElementById('audio-toggle');
+    if (audioIsolation) {
+        thumb.style.transform = 'translateX(20px)';
+        thumb.style.background = '#C5A059';
+        btn.style.borderColor = '#C5A059';
+        // Auto-switch to audio format
+        document.getElementById('btn-audio').click();
+    } else {
+        thumb.style.transform = 'translateX(0)';
+        thumb.style.background = '#475569';
+        btn.style.borderColor = 'rgba(197,160,89,0.3)';
+        document.getElementById('btn-video').click();
+    }
+});
+
+// ── Enter key on URL input ──
+document.getElementById('url-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('extract-btn').click();
+});
+
+// ── Main Extract Button ──
+document.getElementById('extract-btn').addEventListener('click', async () => {
+    const url = document.getElementById('url-input').value.trim();
+    if (!url) { showError('Please enter a YouTube URL first.'); return; }
+
+    const videoId = extractVideoId(url);
+    if (!videoId) { showError('Invalid YouTube URL — please check and try again.'); return; }
+
+    setLoading(true);
+
+    try {
+        const res = await fetch(`${API_BASE}/api/info?url=${encodeURIComponent(url)}`);
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || 'Could not fetch video info. Is the backend running?');
+        }
+        const data = await res.json();
+
+        // Save to sessionStorage for next page
+        sessionStorage.setItem('tr_info', JSON.stringify({ ...data, originalUrl: url, videoId }));
+        sessionStorage.setItem('tr_options', JSON.stringify({
+            format:    audioIsolation ? 'audio' : selectedFormat,
+            quality:   document.getElementById('quality-select').value,
+            trimStart: document.getElementById('trim-start').value.trim(),
+            trimEnd:   document.getElementById('trim-end').value.trim(),
+        }));
+
+        window.location.href = 'preview.html';
+    } catch (err) {
+        showError(err.message);
+        setLoading(false);
+    }
+});
+</script>
+</body>
+</html>

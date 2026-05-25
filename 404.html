@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeRip | Page Not Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=bespoke-serif@700,400&f[]=satoshi@500,400,300&display=swap');
+        body { font-family:'Satoshi',sans-serif; background-color:#020617; color:#f8fafc; }
+        .font-serif { font-family:'Bespoke Serif',serif; }
+        .gold-gradient-text { background:linear-gradient(135deg,#C5A059 0%,#F1D39B 50%,#B38B45 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .gold-btn { background:linear-gradient(135deg,#C5A059 0%,#B38B45 100%); transition:all 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .gold-btn:hover { background:linear-gradient(135deg,#E2C284 0%,#C5A059 100%); transform:translateY(-2px); box-shadow:0 15px 30px -10px rgba(197,160,89,0.3); }
+    </style>
+</head>
+<body>
+<div class="min-h-screen flex flex-col items-center justify-center px-6 text-center selection:bg-[#C5A059]/30">
+
+    <!-- Logo -->
+    <a href="index.html" class="flex items-center gap-3 mb-16 no-underline">
+        <div class="w-10 h-10 border border-[#C5A059] flex items-center justify-center rotate-45">
+            <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-xl -rotate-45"></iconify-icon>
+        </div>
+        <span class="font-serif text-2xl font-bold tracking-[0.1em] uppercase text-white">Tube<span class="text-[#C5A059]">Rip</span></span>
+    </a>
+
+    <!-- 404 -->
+    <div class="space-y-6 max-w-lg">
+        <p class="text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">Error 404</p>
+        <h1 class="text-5xl sm:text-7xl font-serif font-light tracking-tight leading-none">
+            Frame <span class="italic gold-gradient-text">Not Found</span>
+        </h1>
+        <p class="text-slate-500 text-sm leading-relaxed font-light">
+            The page you are seeking has vanished from our archive. Perhaps it was never catalogued — or the link is broken.
+        </p>
+        <div class="pt-6 flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="index.html" class="gold-btn px-10 py-4 text-white text-[10px] font-bold tracking-[0.3em] uppercase flex items-center justify-center gap-2">
+                <iconify-icon icon="lucide:home"></iconify-icon>
+                Return to Atelier
+            </a>
+            <a href="history.html" class="px-10 py-4 border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-[#C5A059]/10 transition-all flex items-center justify-center gap-2">
+                <iconify-icon icon="lucide:archive"></iconify-icon>
+                View Archive
+            </a>
+        </div>
+    </div>
+
+    <!-- Decorative line -->
+    <div class="mt-20 flex items-center gap-4 opacity-30">
+        <div class="h-px w-24 bg-gradient-to-r from-transparent to-[#C5A059]"></div>
+        <iconify-icon icon="lucide:sparkles" class="text-[#C5A059] text-sm"></iconify-icon>
+        <div class="h-px w-24 bg-gradient-to-l from-transparent to-[#C5A059]"></div>
+    </div>
+    <p class="mt-6 text-[9px] tracking-[0.3em] text-slate-700 uppercase">© 2024 TubeRip International S.A.</p>
+</div>
+</body>
+</html>

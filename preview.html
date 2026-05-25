@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeRip | Content Preview & Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=bespoke-serif@700,400&f[]=satoshi@500,400,300&display=swap');
+        :root { --navy-deep:#020617; --gold-primary:#C5A059; --gold-light:#E2C284; --silver-text:#94A3B8; }
+        body { font-family:'Satoshi',sans-serif; background-color:var(--navy-deep); color:#f8fafc; margin:0; }
+        .font-serif { font-family:'Bespoke Serif',serif; }
+        .glass-panel { background:rgba(255,255,255,0.02); backdrop-filter:blur(20px); border:1px solid rgba(197,160,89,0.15); }
+        .gold-gradient-text { background:linear-gradient(135deg,#C5A059 0%,#F1D39B 50%,#B38B45 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .gold-btn { background:linear-gradient(135deg,#C5A059 0%,#B38B45 100%); transition:all 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .gold-btn:hover { background:linear-gradient(135deg,#E2C284 0%,#C5A059 100%); transform:translateY(-2px); box-shadow:0 15px 30px -10px rgba(197,160,89,0.3); }
+        .scrubber-bar { background:rgba(255,255,255,0.1); height:4px; position:relative; cursor:pointer; }
+        .scrubber-progress { background:var(--gold-primary); height:100%; width:0%; transition:width 0.3s; }
+        .scrubber-handle { width:12px; height:12px; background:#fff; border:2px solid var(--gold-primary); border-radius:50%; position:absolute; top:50%; left:0%; transform:translate(-50%,-50%); box-shadow:0 0 10px rgba(197,160,89,0.5); transition:left 0.3s; }
+        .shimmer { position:relative; overflow:hidden; }
+        .shimmer::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent); animation:shimmer-anim 4s infinite; }
+        @keyframes shimmer-anim { 0%{left:-100%} 50%{left:100%} 100%{left:100%} }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .spinner { display:inline-block; width:18px; height:18px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
+        #error-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(120%); background:#1a0000; border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:0.75rem 1.5rem; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); z-index:9999; white-space:nowrap; }
+        #error-toast.show { transform:translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+<div class="min-h-screen flex flex-col selection:bg-[#C5A059]/30 selection:text-white">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-[1440px] mx-auto px-6 sm:px-12 h-20 sm:h-24 flex items-center justify-between">
+            <div class="flex items-center gap-6 sm:gap-12">
+                <a href="index.html" class="flex items-center gap-3 no-underline">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 border border-[#C5A059] flex items-center justify-center rotate-45">
+                        <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-base sm:text-xl -rotate-45"></iconify-icon>
+                    </div>
+                    <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.1em] uppercase text-white">Tube<span class="text-[#C5A059]">Rip</span></span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="index.html" class="text-[#C5A059] text-xs font-bold tracking-widest uppercase">Exclusive Features</a>
+                    <a href="#" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Concierge Support</a>
+                    <a href="#" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Our Legacy</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 sm:gap-8">
+                <button class="hidden sm:block text-xs font-bold tracking-widest text-slate-400 uppercase border-b border-transparent hover:border-[#C5A059] transition-all pb-1">Sign In</button>
+                <a href="index.html" class="px-4 sm:px-8 py-2 sm:py-3 border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-500">Join the Atelier</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 sm:pt-32 pb-16 lg:pb-24">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
+
+            <!-- Header -->
+            <header class="mb-8 sm:mb-12 flex flex-col lg:flex-row items-center lg:items-end justify-between gap-8 text-center lg:text-left">
+                <div class="space-y-4">
+                    <span class="text-[9px] sm:text-[10px] font-bold tracking-[0.4em] text-[#C5A059] uppercase">Step 02 / Verification</span>
+                    <h1 class="text-2xl sm:text-4xl lg:text-5xl font-serif font-light tracking-tight">
+                        Cinematic <span class="italic gold-gradient-text">Preview</span>
+                    </h1>
+                    <p class="text-slate-500 max-w-xl text-xs sm:text-sm leading-relaxed mx-auto lg:mx-0 px-2 sm:px-0">
+                        Review your high-fidelity extraction before final archival. All parameters have been calibrated to master standards.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-slate-500">
+                    <span class="flex items-center gap-2"><iconify-icon icon="lucide:check-circle" class="text-green-500"></iconify-icon> Bit-Perfect</span>
+                    <span class="w-px h-4 bg-white/10"></span>
+                    <span class="flex items-center gap-2"><iconify-icon icon="lucide:zap" class="text-[#C5A059]"></iconify-icon> GPU Accelerated</span>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
+
+                <!-- Main Player Area -->
+                <div class="col-span-12 lg:col-span-8">
+                    <div class="glass-panel rounded-sm relative overflow-hidden group">
+                        <div class="aspect-video bg-black relative">
+                            <img id="thumb-img" src="" alt="Content Preview" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <button id="play-btn" class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 border border-white/20 rounded-full flex items-center justify-center bg-black/40 backdrop-blur-sm group-hover:scale-110 transition-transform duration-500">
+                                    <iconify-icon icon="lucide:play" class="text-white text-xl sm:text-2xl lg:text-3xl ml-1.5 sm:ml-2"></iconify-icon>
+                                </button>
+                            </div>
+                            <!-- Embedded YouTube iframe (hidden by default) -->
+                            <div id="yt-embed-wrap" class="absolute inset-0 hidden">
+                                <iframe id="yt-iframe" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="p-4 sm:p-6 lg:p-8 bg-[#020617]/90 backdrop-blur-md">
+                            <div class="space-y-6">
+                                <div class="scrubber-bar group/scrub">
+                                    <div class="scrubber-progress" id="scrubber-progress"></div>
+                                    <div class="scrubber-handle" id="scrubber-handle"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex flex-wrap items-center gap-4 sm:gap-8">
+                                        <div class="flex items-center gap-6">
+                                            <button class="text-slate-400 hover:text-[#C5A059] transition-colors"><iconify-icon icon="lucide:skip-back" class="text-lg lg:text-xl"></iconify-icon></button>
+                                            <button id="playpause-btn" class="text-white hover:text-[#C5A059] transition-colors"><iconify-icon icon="lucide:play-circle" class="text-2xl lg:text-3xl"></iconify-icon></button>
+                                            <button class="text-slate-400 hover:text-[#C5A059] transition-colors"><iconify-icon icon="lucide:skip-forward" class="text-lg lg:text-xl"></iconify-icon></button>
+                                        </div>
+                                        <div class="text-[11px] font-mono tracking-widest text-slate-500" id="duration-display">--:-- / --:--</div>
+                                    </div>
+                                    <button class="p-2 text-slate-400 hover:text-[#C5A059] transition-colors"><iconify-icon icon="lucide:maximize" class="text-lg"></iconify-icon></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Back + extra actions -->
+                    <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4">
+                        <a href="index.html" class="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase hover:text-[#C5A059] transition-colors">
+                            <iconify-icon icon="lucide:chevron-left"></iconify-icon>
+                            Recalibrate Parameters
+                        </a>
+                        <div class="flex gap-4">
+                            <button class="w-full sm:w-auto px-6 h-10 sm:h-12 border border-white/10 text-[9px] sm:text-xs font-bold tracking-widest uppercase hover:border-[#C5A059]/30 transition-all">Capture Frame</button>
+                            <button class="w-full sm:w-auto px-6 h-10 sm:h-12 border border-white/10 text-[9px] sm:text-xs font-bold tracking-widest uppercase hover:border-[#C5A059]/30 transition-all">Download Audio Stub</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-span-12 lg:col-span-4 space-y-8">
+                    <div class="glass-panel p-6 sm:p-8 rounded-sm space-y-8">
+                        <div>
+                            <h3 class="text-[10px] font-bold tracking-[0.3em] text-[#C5A059] uppercase mb-6">Technical Specifications</h3>
+                            <div class="space-y-6">
+                                <div class="flex flex-col pb-4 border-b border-white/5 gap-1">
+                                    <span class="text-xs text-slate-500 font-light tracking-wide uppercase">Title</span>
+                                    <span class="text-sm font-serif font-bold text-white" id="spec-title">—</span>
+                                </div>
+                                <div class="flex flex-col pb-4 border-b border-white/5 gap-1">
+                                    <span class="text-xs text-slate-500 font-light tracking-wide uppercase">Channel</span>
+                                    <span class="text-sm font-serif font-bold text-white" id="spec-channel">—</span>
+                                </div>
+                                <div class="flex flex-col pb-4 border-b border-white/5 gap-1">
+                                    <span class="text-xs text-slate-500 font-light tracking-wide uppercase">Format</span>
+                                    <span class="text-sm font-serif font-bold text-white" id="spec-format">—</span>
+                                </div>
+                                <div class="flex flex-col pb-4 border-b border-white/5 gap-1">
+                                    <span class="text-xs text-slate-500 font-light tracking-wide uppercase">Quality</span>
+                                    <span class="text-sm font-serif font-bold text-[#C5A059]" id="spec-quality">—</span>
+                                </div>
+                                <div class="flex flex-col pb-4 border-b border-white/5 gap-1">
+                                    <span class="text-xs text-slate-500 font-light tracking-wide uppercase">Estimated Size</span>
+                                    <span class="text-sm font-serif font-bold text-[#C5A059]" id="spec-size">—</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-slate-500 font-light tracking-wide uppercase">Duration</span>
+                                    <span class="text-sm font-serif font-bold text-white" id="spec-duration">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button id="proceed-btn" class="block w-full text-center h-12 sm:h-14 lg:h-16 gold-btn text-white text-[10px] sm:text-[11px] font-bold tracking-[0.3em] uppercase flex items-center justify-center gap-3 shadow-xl shimmer">
+                                <span id="proceed-label">Proceed to Export</span>
+                                <div id="proceed-spinner" class="spinner" style="display:none"></div>
+                                <iconify-icon icon="lucide:arrow-right" id="proceed-arrow"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Vault upsell -->
+                    <div class="glass-panel p-6 rounded-sm border-dashed">
+                        <div class="flex gap-4">
+                            <div class="w-24 h-24 bg-white/5 border border-[#C5A059]/10 flex-shrink-0 flex items-center justify-center">
+                                <iconify-icon icon="lucide:hard-drive" class="text-[#C5A059] text-2xl"></iconify-icon>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-bold text-[#C5A059] uppercase">Premium Archive</p>
+                                <h4 class="text-sm font-serif">Cloud Vault Storage</h4>
+                                <p class="text-[10px] text-slate-500 leading-normal">Save your extractions in our secure Swiss vault for lifetime access.</p>
+                                <button class="text-[9px] font-bold uppercase tracking-widest text-white border-b border-[#C5A059] pb-0.5">Activate Vault</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 sm:px-12">
+            <div class="flex flex-col lg:flex-row justify-between gap-16 lg:gap-24">
+                <div class="max-w-sm space-y-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 border border-[#C5A059] flex items-center justify-center rotate-45">
+                            <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-lg -rotate-45"></iconify-icon>
+                        </div>
+                        <span class="font-serif text-xl font-bold tracking-[0.1em] uppercase">Tube<span class="text-[#C5A059]">Rip</span></span>
+                    </div>
+                    <p class="text-slate-500 text-xs leading-[2] tracking-widest uppercase">The definitive standard in digital content curation. Crafted for the discerning few who refuse to compromise on quality.</p>
+                    <div class="flex gap-6">
+                        <a href="#" class="text-[#C5A059] hover:text-white transition-all"><iconify-icon icon="lucide:instagram" class="text-xl"></iconify-icon></a>
+                        <a href="#" class="text-[#C5A059] hover:text-white transition-all"><iconify-icon icon="lucide:twitter" class="text-xl"></iconify-icon></a>
+                        <a href="#" class="text-[#C5A059] hover:text-white transition-all"><iconify-icon icon="lucide:linkedin" class="text-xl"></iconify-icon></a>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-16 sm:gap-24">
+                    <div class="space-y-6">
+                        <h4 class="text-[10px] font-bold tracking-[0.3em] text-[#C5A059] uppercase">The Suite</h4>
+                        <ul class="space-y-4 text-xs tracking-widest text-slate-500 uppercase">
+                            <li><a href="index.html" class="hover:text-white transition-colors">Master Downloader</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Batch Processing</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">API Integration</a></li>
+                            <li><a href="history.html" class="hover:text-white transition-colors">Cloud Archive</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6">
+                        <h4 class="text-[10px] font-bold tracking-[0.3em] text-[#C5A059] uppercase">Company</h4>
+                        <ul class="space-y-4 text-xs tracking-widest text-slate-500 uppercase">
+                            <li><a href="#" class="hover:text-white transition-colors">Privacy Concierge</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Legal Charter</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Press Relations</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-24 sm:mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+                <p class="text-[10px] tracking-[0.2em] text-slate-600 uppercase">© 2024 TubeRip International S.A. All Rights Reserved.</p>
+                <div class="flex items-center gap-12">
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">Geneva</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">New York</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">London</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<div id="error-toast"></div>
+
+<script>
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001' : 'https://YOUR-BACKEND-URL.com';
+
+function showError(msg) {
+    const t = document.getElementById('error-toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function fmtDur(s) {
+    if (!s) return '--:--';
+    const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = Math.floor(s%60);
+    return h ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+             : `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+function estSize(q, dur) {
+    const map = {'4K':40,'1080p':8,'720p':4,'480p':2,'360p':1,'320kbps':.32,'192kbps':.192,'128kbps':.128};
+    const bps = map[q] || 4;
+    if (!dur) return '—';
+    const mb = (bps * dur) / 8;
+    return mb > 1000 ? (mb/1000).toFixed(2)+' GB' : Math.round(mb)+' MB';
+}
+
+// Load data from sessionStorage
+const info = JSON.parse(sessionStorage.getItem('tr_info') || 'null');
+const opts = JSON.parse(sessionStorage.getItem('tr_options') || 'null');
+if (!info || !opts) { window.location.href = 'index.html'; }
+
+// Populate thumbnail
+const thumb = document.getElementById('thumb-img');
+thumb.src = info.thumbnail || `https://img.youtube.com/vi/${info.videoId}/maxresdefault.jpg`;
+thumb.onerror = () => { thumb.src = `https://img.youtube.com/vi/${info.videoId}/hqdefault.jpg`; };
+
+// Populate specs
+document.getElementById('spec-title').textContent    = info.title || '—';
+document.getElementById('spec-channel').textContent  = info.uploader || info.channel || '—';
+document.getElementById('spec-format').textContent   = opts.format === 'audio' ? 'MP3 Audio' : 'MP4 Video';
+document.getElementById('spec-quality').textContent  = opts.quality || '—';
+document.getElementById('spec-size').textContent     = estSize(opts.quality, info.duration);
+document.getElementById('spec-duration').textContent = fmtDur(info.duration);
+document.getElementById('duration-display').textContent = `00:00 / ${fmtDur(info.duration)}`;
+document.title = `TubeRip | ${info.title || 'Preview'}`;
+
+// Play button — embed YouTube iframe
+document.getElementById('play-btn').addEventListener('click', () => {
+    document.getElementById('play-btn').style.display = 'none';
+    const wrap = document.getElementById('yt-embed-wrap');
+    document.getElementById('yt-iframe').src = `https://www.youtube.com/embed/${info.videoId}?autoplay=1`;
+    wrap.classList.remove('hidden');
+});
+
+// Proceed to Export
+document.getElementById('proceed-btn').addEventListener('click', async () => {
+    document.getElementById('proceed-label').style.display = 'none';
+    document.getElementById('proceed-arrow').style.display = 'none';
+    document.getElementById('proceed-spinner').style.display = 'inline-block';
+    document.getElementById('proceed-btn').disabled = true;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/download/start`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: info.originalUrl,
+                format: opts.format,
+                quality: opts.quality,
+                trimStart: opts.trimStart,
+                trimEnd: opts.trimEnd,
+                title: info.title,
+            })
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || 'Failed to start extraction.');
+        }
+        const job = await res.json();
+        sessionStorage.setItem('tr_job', JSON.stringify(job));
+        window.location.href = 'processing.html';
+    } catch (err) {
+        showError(err.message);
+        document.getElementById('proceed-label').style.display = 'inline';
+        document.getElementById('proceed-arrow').style.display = 'inline';
+        document.getElementById('proceed-spinner').style.display = 'none';
+        document.getElementById('proceed-btn').disabled = false;
+    }
+});
+</script>
+</body>
+</html>

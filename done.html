@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeRip | Download Ready</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=bespoke-serif@700,400&f[]=satoshi@500,400,300&display=swap');
+        :root { --navy-deep:#020617; --gold-primary:#C5A059; }
+        body { font-family:'Satoshi',sans-serif; background-color:var(--navy-deep); color:#f8fafc; }
+        .font-serif { font-family:'Bespoke Serif',serif; }
+        .glass-panel { background:rgba(255,255,255,0.02); backdrop-filter:blur(20px); border:1px solid rgba(197,160,89,0.15); }
+        .gold-gradient-text { background:linear-gradient(135deg,#C5A059 0%,#F1D39B 50%,#B38B45 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .gold-btn { background:linear-gradient(135deg,#C5A059 0%,#B38B45 100%); transition:all 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .gold-btn:hover { background:linear-gradient(135deg,#E2C284 0%,#C5A059 100%); transform:translateY(-2px); box-shadow:0 15px 30px -10px rgba(197,160,89,0.3); }
+        .shimmer { position:relative; overflow:hidden; }
+        .shimmer::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent); animation:shimmer-anim 4s infinite; }
+        @keyframes shimmer-anim { 0%{left:-100%} 50%{left:100%} 100%{left:100%} }
+        @keyframes scaleIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+        .scale-in { animation:scaleIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+    </style>
+</head>
+<body>
+<div class="min-h-screen flex flex-col selection:bg-[#C5A059]/30 selection:text-white">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-[1440px] mx-auto px-6 sm:px-12 h-20 sm:h-24 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 no-underline">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 border border-[#C5A059] flex items-center justify-center rotate-45">
+                    <iconify-icon icon="lucide:crown" class="text-[#C5A059] text-base sm:text-xl -rotate-45"></iconify-icon>
+                </div>
+                <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.1em] uppercase text-white">Tube<span class="text-[#C5A059]">Rip</span></span>
+            </a>
+            <div class="hidden lg:flex items-center gap-8">
+                <a href="index.html" class="text-[#C5A059] text-xs font-bold tracking-widest uppercase">Exclusive Features</a>
+                <a href="history.html" class="text-slate-400 text-xs font-bold tracking-widest hover:text-[#C5A059] transition-colors uppercase">Archive</a>
+            </div>
+            <a href="index.html" class="px-4 sm:px-8 py-2 sm:py-3 border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-500">New Extraction</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 sm:pt-32 lg:pt-48 pb-16 sm:pb-24 lg:pb-32">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
+
+            <!-- Success Header -->
+            <div class="text-center mb-8 sm:mb-12 lg:mb-16 space-y-4">
+                <div class="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 mb-4 scale-in">
+                    <iconify-icon icon="lucide:check" class="text-2xl sm:text-3xl lg:text-4xl text-[#C5A059]"></iconify-icon>
+                </div>
+                <h1 class="text-2xl sm:text-3xl lg:text-5xl font-serif font-light tracking-tight">
+                    Extraction <span class="gold-gradient-text italic">Complete</span>
+                </h1>
+                <p class="text-slate-400 font-light tracking-wide uppercase text-xs">Your high-fidelity master is ready for archival</p>
+            </div>
+
+            <!-- File Card -->
+            <div class="glass-panel p-6 sm:p-8 lg:p-12 rounded-sm">
+                <div class="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-12">
+                    <!-- Thumbnail -->
+                    <div class="w-full lg:w-48 xl:w-64 aspect-video lg:aspect-square flex-shrink-0 bg-black/40 overflow-hidden border border-white/5">
+                        <img id="done-thumb" src="" alt="Thumbnail" class="w-full h-full object-cover opacity-80">
+                    </div>
+                    <!-- File info -->
+                    <div class="flex-1 space-y-4 sm:space-y-6 text-center lg:text-left">
+                        <div class="space-y-2">
+                            <h2 class="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-white leading-snug" id="file-name">—</h2>
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-4 text-[10px] sm:text-xs font-bold tracking-widest text-[#C5A059] uppercase">
+                                <span class="flex items-center gap-1.5"><iconify-icon icon="lucide:file-video" class="text-lg" id="file-icon"></iconify-icon> <span id="file-type">Video File</span></span>
+                                <span class="w-1 h-1 bg-white/20 rounded-full"></span>
+                                <span id="file-quality">—</span>
+                                <span class="w-1 h-1 bg-white/20 rounded-full"></span>
+                                <span id="file-duration">—</span>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <a id="download-link" href="#" download class="gold-btn w-full h-12 sm:h-14 lg:h-16 flex items-center justify-center gap-3 text-[10px] sm:text-xs lg:text-sm font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-white shadow-xl shimmer">
+                                <iconify-icon icon="lucide:download" class="text-xl"></iconify-icon>
+                                Download Master
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical specs -->
+                <div class="mt-12 pt-12 border-t border-white/5">
+                    <h3 class="text-[10px] font-bold tracking-[0.3em] text-slate-500 uppercase mb-8">Technical Specifications</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                        <div class="space-y-2">
+                            <p class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-[#C5A059] uppercase">Encoding</p>
+                            <p class="text-sm font-serif text-white" id="spec-encoding">—</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-[#C5A059] uppercase">Audio Stream</p>
+                            <p class="text-sm font-serif text-white" id="spec-audio">—</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-[#C5A059] uppercase">Quality</p>
+                            <p class="text-sm font-serif text-white" id="spec-quality">—</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-[#C5A059] uppercase">SHA-256</p>
+                            <p class="text-[10px] font-mono text-slate-400 truncate" id="spec-hash">—</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary actions -->
+            <div class="mt-8 sm:mt-12 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 px-4">
+                <p class="text-[10px] tracking-[0.2em] text-slate-600 uppercase">Download link expires in 24 hours</p>
+                <div class="flex items-center gap-6">
+                    <a href="history.html" class="text-xs font-bold tracking-widest text-slate-400 hover:text-white transition-colors uppercase border-b border-transparent hover:border-[#C5A059]">View Archive</a>
+                    <a href="index.html" class="w-full lg:w-auto px-8 py-3 border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-[#C5A059]/10 transition-all text-center">
+                        Prepare Another
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-16 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 sm:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <p class="text-[10px] tracking-[0.2em] text-slate-600 uppercase">© 2024 TubeRip International S.A. All Rights Reserved.</p>
+                <div class="flex items-center gap-12">
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">Geneva</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">New York</span>
+                    <span class="text-[10px] tracking-[0.3em] text-[#C5A059] uppercase">London</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001' : 'https://YOUR-BACKEND-URL.com';
+
+const job  = JSON.parse(sessionStorage.getItem('tr_job')  || 'null');
+const opts = JSON.parse(sessionStorage.getItem('tr_options') || 'null');
+const info = JSON.parse(sessionStorage.getItem('tr_info') || 'null');
+if (!job || !opts) { window.location.href = 'index.html'; }
+
+function fmtDur(s) {
+    if (!s) return '—';
+    const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = Math.floor(s%60);
+    return h ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+             : `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+const isAudio  = opts.format === 'audio';
+const ext      = isAudio ? 'mp3' : 'mp4';
+const safeTitle = (info?.title || job.jobId || 'tuberip').replace(/[^\w\-\s]/g,'_').trim();
+const fileName  = safeTitle + '.' + ext;
+
+// Thumbnail
+if (info) {
+    const th = document.getElementById('done-thumb');
+    th.src = info.thumbnail || `https://img.youtube.com/vi/${info.videoId}/hqdefault.jpg`;
+    th.onerror = () => th.src = `https://img.youtube.com/vi/${info.videoId}/hqdefault.jpg`;
+}
+
+document.getElementById('file-name').textContent    = fileName;
+document.getElementById('file-type').textContent    = isAudio ? 'Audio File' : 'Video File';
+document.getElementById('file-icon').setAttribute('icon', isAudio ? 'lucide:file-audio' : 'lucide:file-video');
+document.getElementById('file-quality').textContent = opts.quality || '—';
+document.getElementById('file-duration').textContent = fmtDur(info?.duration);
+document.getElementById('spec-encoding').textContent = isAudio ? 'MP3 / LAME' : 'H.264 / H.265';
+document.getElementById('spec-audio').textContent   = isAudio ? opts.quality : 'AAC 192kbps';
+document.getElementById('spec-quality').textContent = opts.quality || '—';
+document.getElementById('spec-hash').textContent    = job.sha256 ? job.sha256.slice(0,8)+'...'+job.sha256.slice(-6) : 'Pending';
+document.title = `TubeRip | ${fileName}`;
+
+// Download link
+const dlUrl = job.downloadUrl
+    ? (job.downloadUrl.startsWith('http') ? job.downloadUrl : `${API_BASE}${job.downloadUrl}`)
+    : `${API_BASE}/api/download/file/${job.jobId}`;
+const link = document.getElementById('download-link');
+link.href = dlUrl;
+link.setAttribute('download', fileName);
+
+// Save to history (localStorage)
+try {
+    const hist = JSON.parse(localStorage.getItem('tr_history') || '[]');
+    hist.unshift({ title: info?.title || fileName, format: opts.format, quality: opts.quality, date: new Date().toISOString(), thumb: info?.thumbnail || '', jobId: job.jobId, url: dlUrl });
+    if (hist.length > 20) hist.pop();
+    localStorage.setItem('tr_history', JSON.stringify(hist));
+} catch {}
+
+link.addEventListener('click', () => { setTimeout(() => { sessionStorage.clear(); }, 5000); });
+</script>
+</body>
+</html>
